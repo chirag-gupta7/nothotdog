@@ -1,0 +1,1055 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hot dog or Not Hot dog?</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <style>
+        :root {
+            --primary: #ff5722;
+            --primary-dark: #e64a19;
+            --secondary: #ffc107;
+            --text-dark: #333333;
+            --text-light: #757575;
+            --bg-light: #f8f9fa;
+            --bg-white: #ffffff;
+            --success: #4caf50;
+            --error: #f44336;
+            --border-radius: 12px;
+            --shadow: 0 6px 12px rgba(0, 0, 0, 0.08);
+            --shadow-hover: 0 10px 20px rgba(0, 0, 0, 0.12);
+            --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--bg-light);
+            color: var(--text-dark);
+            line-height: 1.6;
+            background-image: radial-gradient(circle at 10% 20%, rgba(255, 209, 67, 0.1) 0%, rgba(255, 145, 83, 0.1) 90%);
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 3rem;
+            position: relative;
+        }
+        
+        .logo {
+            max-width: 120px;
+            margin-bottom: 1rem;
+            animation: float 5s ease-in-out infinite;
+        }
+        
+        h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 0.8rem;
+            position: relative;
+        }
+        
+        h1::after {
+            content: "";
+            position: absolute;
+            width: 80px;
+            height: 4px;
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-radius: 2px;
+        }
+        
+        .subtitle {
+            color: var(--text-light);
+            font-size: 1.2rem;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        
+        .card {
+            background-color: var(--bg-white);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            padding: 2.5rem;
+            margin-bottom: 2.5rem;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .card:hover {
+            box-shadow: var(--shadow-hover);
+            transform: translateY(-5px);
+        }
+        
+        .card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 6px;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+        }
+        
+        .upload-area {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            border: 2px dashed #e0e0e0;
+            border-radius: var(--border-radius);
+            padding: 3rem 2rem;
+            transition: var(--transition);
+            cursor: pointer;
+            position: relative;
+            background: linear-gradient(145deg, #f8f9fa, #ffffff);
+        }
+        
+        .upload-area:hover {
+            border-color: var(--primary);
+            transform: scale(1.01);
+        }
+        
+        .upload-area.dragover {
+            border-color: var(--primary);
+            background: linear-gradient(145deg, rgba(255, 87, 34, 0.05), rgba(255, 193, 7, 0.05));
+            transform: scale(1.02);
+            box-shadow: 0 0 15px rgba(255, 87, 34, 0.2);
+        }
+        
+        .upload-icon {
+            font-size: 3.5rem;
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+            filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.1));
+            transition: var(--transition);
+        }
+        
+        .upload-area:hover .upload-icon {
+            transform: translateY(-5px);
+            color: var(--secondary);
+        }
+        
+        #file-input {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            opacity: 0;
+            cursor: pointer;
+        }
+        
+        .upload-text {
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+        
+        .upload-text p:first-child {
+            font-weight: 500;
+            font-size: 1.1rem;
+        }
+        
+        .file-info {
+            display: flex;
+            align-items: center;
+            margin-top: 1.5rem;
+            max-width: 100%;
+            background-color: rgba(255, 87, 34, 0.08);
+            padding: 0.6rem 1.2rem;
+            border-radius: 50px;
+            animation: fadeIn 0.5s;
+        }
+        
+        .file-name {
+            font-size: 0.95rem;
+            margin-left: 0.8rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 250px;
+            color: var(--primary-dark);
+        }
+        
+        .btn {
+            background: linear-gradient(45deg, var(--primary), var(--primary-dark));
+            color: white;
+            border: none;
+            padding: 0.9rem 2.5rem;
+            font-size: 1.05rem;
+            font-weight: 500;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(230, 74, 25, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: 0.5s;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(230, 74, 25, 0.4);
+        }
+        
+        .btn:hover::before {
+            left: 100%;
+        }
+        
+        .btn:active {
+            transform: translateY(0);
+        }
+        
+        .btn i {
+            margin-right: 0.7rem;
+            font-size: 1.1rem;
+        }
+        
+        .btn-container {
+            text-align: center;
+            margin-top: 2rem;
+        }
+        
+        #preview-container {
+            display: none;
+            margin: 2rem 0;
+            text-align: center;
+            animation: fadeIn 0.5s;
+        }
+        
+        #image-preview {
+            max-width: 100%;
+            max-height: 350px;
+            border-radius: var(--border-radius);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+            transition: var(--transition);
+            transform: rotate(-1deg);
+            border: 10px solid white;
+        }
+        
+        #image-preview:hover {
+            transform: rotate(0deg) scale(1.02);
+        }
+        
+        .loader {
+            display: inline-block;
+            width: 24px;
+            height: 24px;
+            border: 3px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s linear infinite;
+            margin-right: 12px;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .results-container {
+            display: none;
+            margin-top: 2rem;
+            animation: fadeInUp 0.8s;
+        }
+        
+        .result-title {
+            font-size: 2rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            text-align: center;
+            color: var(--primary);
+            position: relative;
+        }
+        
+        .result-title::after {
+            content: "🔍";
+            font-size: 1.5rem;
+            position: absolute;
+            margin-left: 10px;
+        }
+        
+        .result-list {
+            list-style: none;
+        }
+        
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.2rem;
+            background-color: white;
+            border-radius: var(--border-radius);
+            margin-bottom: 1rem;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+            transition: var(--transition);
+            animation: fadeIn 0.5s;
+            animation-fill-mode: both;
+        }
+        
+        .result-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.08);
+        }
+        
+        .result-item:nth-child(1) { animation-delay: 0.1s; }
+        .result-item:nth-child(2) { animation-delay: 0.2s; }
+        .result-item:nth-child(3) { animation-delay: 0.3s; }
+        
+        .result-label {
+            font-weight: 500;
+            margin-top: 0.5rem;
+            font-size: 1.1rem;
+        }
+        
+        .result-score {
+            font-weight: 600;
+            color: var(--primary);
+            font-size: 1.2rem;
+        }
+        
+        .progress-bar {
+            height: 12px;
+            background-color: #f0f0f0;
+            border-radius: 50px;
+            overflow: hidden;
+            margin-top: 0.7rem;
+            width: 300px;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            border-radius: 50px;
+            transition: width 1s cubic-bezier(0.25, 0.8, 0.25, 1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .progress-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            animation: shine 2s infinite;
+        }
+        
+        .error-container {
+            display: none;
+            background-color: #ffebee;
+            border-left: 4px solid var(--error);
+            padding: 1.2rem;
+            margin-top: 1.5rem;
+            border-radius: var(--border-radius);
+            animation: shake 0.5s;
+        }
+        
+        .error-message {
+            color: var(--error);
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+        }
+        
+        .error-message::before {
+            content: "\f071";
+            font-family: "Font Awesome 6 Free";
+            font-weight: 900;
+            margin-right: 10px;
+            font-size: 1.1rem;
+        }
+        
+        .hotdog-badge {
+            background: linear-gradient(45deg, #4caf50, #8bc34a);
+            color: white;
+            padding: 0.5rem 1.2rem;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            box-shadow: 0 3px 6px rgba(76, 175, 80, 0.3);
+            display: inline-flex;
+            align-items: center;
+            letter-spacing: 0.5px;
+        }
+        
+        .hotdog-badge::before {
+            content: "🌭";
+            margin-right: 6px;
+            font-size: 1.1rem;
+        }
+        
+        .not-hotdog-badge {
+            background: linear-gradient(45deg, #f44336, #ff7043);
+            color: white;
+            padding: 0.5rem 1.2rem;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            box-shadow: 0 3px 6px rgba(244, 67, 54, 0.3);
+            display: inline-flex;
+            align-items: center;
+            letter-spacing: 0.5px;
+        }
+        
+        .not-hotdog-badge::before {
+            content: "❌";
+            margin-right: 6px;
+            font-size: 1rem;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 3rem;
+            color: var(--text-light);
+            font-size: 0.95rem;
+            padding: 1.5rem;
+            border-top: 1px solid rgba(0,0,0,0.05);
+        }
+        
+        .credit-link {
+            color: var(--primary);
+            text-decoration: none;
+            transition: var(--transition);
+            font-weight: 500;
+        }
+        
+        .credit-link:hover {
+            color: var(--primary-dark);
+            text-decoration: underline;
+        }
+        
+        /* Celebrations */
+        .celebration {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1000;
+        }
+        
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background-color: #f0f0f0;
+            border-radius: 0;
+            animation: confetti-fall 5s linear forwards;
+        }
+        
+        /* Theme Toggle */
+        .theme-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: none;
+            border: none;
+            color: var(--text-light);
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: var(--transition);
+            z-index: 10;
+        }
+        
+        .theme-toggle:hover {
+            transform: rotate(45deg);
+            color: var(--primary);
+        }
+        
+        /* Dark mode styles */
+        body.dark-mode {
+            background-color: #121212;
+            color: #e0e0e0;
+            background-image: radial-gradient(circle at 10% 20%, rgba(61, 51, 41, 0.3) 0%, rgba(61, 41, 41, 0.3) 90%);
+        }
+        
+        body.dark-mode .card {
+            background-color: #1e1e1e;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+        }
+        
+        body.dark-mode .upload-area {
+            border-color: #333333;
+            background: linear-gradient(145deg, #1a1a1a, #252525);
+        }
+        
+        body.dark-mode .subtitle {
+            color: #b0b0b0;
+        }
+        
+        body.dark-mode .file-info {
+            background-color: rgba(255, 87, 34, 0.15);
+        }
+        
+        body.dark-mode .progress-bar {
+            background-color: #333333;
+        }
+        
+        body.dark-mode .result-item {
+            background-color: #252525;
+        }
+        
+        body.dark-mode .error-container {
+            background-color: rgba(244, 67, 54, 0.15);
+        }
+        
+        body.dark-mode footer {
+            border-top-color: rgba(255,255,255,0.1);
+        }
+        
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+            20%, 40%, 60%, 80% { transform: translateX(5px); }
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        @keyframes shine {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+        
+        @keyframes confetti-fall {
+            0% {
+                transform: translateY(-100vh) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100vh) rotate(720deg);
+                opacity: 0;
+            }
+        }
+        
+        /* Responsive styles */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.2rem;
+            }
+            
+            .card {
+                padding: 1.8rem;
+            }
+            
+            .upload-area {
+                padding: 2rem 1.5rem;
+            }
+            
+            .btn {
+                padding: 0.8rem 1.8rem;
+            }
+            
+            .progress-bar {
+                width: 200px;
+            }
+            
+            .result-item {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .result-score {
+                margin-top: 0.5rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            .subtitle {
+                font-size: 1rem;
+            }
+            
+            .file-name {
+                max-width: 150px;
+            }
+            
+            .theme-toggle {
+                top: 10px;
+                right: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="celebration" id="celebration"></div>
+    <button class="theme-toggle" id="theme-toggle">
+        <i class="fas fa-moon"></i>
+    </button>
+    
+    <div class="container">
+        <header>
+            <img src="https://img.icons8.com/fluency/96/000000/hot-dog.png" alt="Hot dog logo" class="logo" />
+            <h1>Hot dog or Not Hot dog?</h1>
+            <p class="subtitle">Upload an image to see if it's a delicious hot dog or something else entirely!</p>
+        </header>
+        
+        <div class="card">
+            <div class="upload-area" id="upload-area">
+                <i class="fas fa-cloud-upload-alt upload-icon"></i>
+                <div class="upload-text">
+                    <p>Drag and drop your image here</p>
+                    <p style="font-size: 0.9rem; color: var(--text-light); margin-top: 8px;">Supports: PNG, JPG, JPEG, GIF, BMP, WEBP</p>
+                </div>
+                <input type="file" id="file-input" accept="image/*" />
+                <div class="file-info" id="file-info" style="display: none;">
+                    <i class="fas fa-file-image" style="color: var(--primary);"></i>
+                    <span class="file-name" id="file-name"></span>
+                </div>
+            </div>
+            
+            <div id="preview-container">
+                <img id="image-preview" alt="Preview" />
+            </div>
+            
+            <div class="btn-container">
+                <button id="submit-btn" class="btn" disabled>
+                    <i class="fas fa-search"></i>Analyze Image
+                </button>
+            </div>
+            
+            <div class="error-container" id="error-container">
+                <div class="error-message" id="error-message"></div>
+            </div>
+        </div>
+        
+        <div class="card results-container" id="results-container">
+            <h2 class="result-title">Results</h2>
+            <div id="results-content"></div>
+        </div>
+        
+        <footer>
+            <p>© 2025 Hot dog Detector • Using <a href="https://huggingface.co/" class="credit-link" target="_blank">Hugging Face</a> AI Model</p>
+            <p style="margin-top: 10px; font-size: 0.85rem;">Created with ❤️ by <a href="https://github.com/chirag-gupta7" class="credit-link" target="_blank">chirag-gupta7</a></p>
+        </footer>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const uploadArea = document.getElementById('upload-area');
+            const fileInput = document.getElementById('file-input');
+            const fileInfo = document.getElementById('file-info');
+            const fileName = document.getElementById('file-name');
+            const submitBtn = document.getElementById('submit-btn');
+            const previewContainer = document.getElementById('preview-container');
+            const imagePreview = document.getElementById('image-preview');
+            const resultsContainer = document.getElementById('results-container');
+            const resultsContent = document.getElementById('results-content');
+            const errorContainer = document.getElementById('error-container');
+            const errorMessage = document.getElementById('error-message');
+            const themeToggle = document.getElementById('theme-toggle');
+            const celebrationContainer = document.getElementById('celebration');
+            
+            // Check for saved theme preference or use user's system preference
+            const prefersDarkScheme = window.matchMedia('(prefers-color-scheme: dark)');
+            const currentTheme = localStorage.getItem('theme');
+            
+            if (currentTheme === 'dark' || (!currentTheme && prefersDarkScheme.matches)) {
+                document.body.classList.add('dark-mode');
+                themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
+            }
+            
+            // Theme toggle functionality
+            themeToggle.addEventListener('click', function() {
+                document.body.classList.toggle('dark-mode');
+                if (document.body.classList.contains('dark-mode')) {
+                    localStorage.setItem('theme', 'dark');
+                    themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
+                } else {
+                    localStorage.setItem('theme', 'light');
+                    themeToggle.innerHTML = '<i class="fas fa-moon"></i>';
+                }
+            });
+            
+            // Audio effects (optional)
+            const uploadSound = new Audio('https://assets.mixkit.co/sfx/preview/mixkit-arcade-game-jump-coin-216.mp3');
+            const successSound = new Audio('https://assets.mixkit.co/sfx/preview/mixkit-achievement-bell-600.mp3');
+            const errorSound = new Audio('https://assets.mixkit.co/sfx/preview/mixkit-software-interface-back-2575.mp3');
+            
+            // Set volume lower
+            uploadSound.volume = 0.2;
+            successSound.volume = 0.2;
+            errorSound.volume = 0.2;
+            
+            // Confetti animation for hot dog results
+            function createConfetti() {
+                celebrationContainer.innerHTML = '';
+                const colors = ['#ff5722', '#ffc107', '#4caf50', '#2196f3', '#9c27b0'];
+                
+                for (let i = 0; i < 100; i++) {
+                    const confetti = document.createElement('div');
+                    confetti.className = 'confetti';
+                    confetti.style.left = Math.random() * 100 + 'vw';
+                    confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                    confetti.style.width = Math.random() * 10 + 5 + 'px';
+                    confetti.style.height = Math.random() * 10 + 5 + 'px';
+                    confetti.style.animationDuration = Math.random() * 3 + 2 + 's';
+                    confetti.style.transform = `rotate(${Math.random() * 360}deg)`;
+                    
+                    // Random shapes
+                    const shapes = ['', '50%'];
+                    confetti.style.borderRadius = shapes[Math.floor(Math.random() * shapes.length)];
+                    
+                    celebrationContainer.appendChild(confetti);
+                }
+                
+                // Remove confetti after animation completes
+                setTimeout(() => {
+                    celebrationContainer.innerHTML = '';
+                }, 5000);
+            }
+            
+            // Drag and drop functionality with improved feedback
+            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                uploadArea.addEventListener(eventName, preventDefaults, false);
+            });
+            
+            function preventDefaults(e) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+            
+            ['dragenter', 'dragover'].forEach(eventName => {
+                uploadArea.addEventListener(eventName, highlight, false);
+            });
+            
+            ['dragleave', 'drop'].forEach(eventName => {
+                uploadArea.addEventListener(eventName, unhighlight, false);
+            });
+            
+            function highlight() {
+                uploadArea.classList.add('dragover');
+            }
+            
+            function unhighlight() {
+                uploadArea.classList.remove('dragover');
+            }
+            
+            uploadArea.addEventListener('drop', handleDrop, false);
+            
+            function handleDrop(e) {
+                const dt = e.dataTransfer;
+                const files = dt.files;
+                
+                if (files.length) {
+                    handleFiles(files);
+                    try {
+                        uploadSound.play();
+                    } catch(e) {
+                        console.log("Audio play prevented by browser policy");
+                    }
+                }
+            }
+            
+            fileInput.addEventListener('change', function() {
+                if (fileInput.files.length) {
+                    handleFiles(fileInput.files);
+                    try {
+                        uploadSound.play();
+                    } catch(e) {
+                        console.log("Audio play prevented by browser policy");
+                    }
+                }
+            });
+            
+            function handleFiles(files) {
+                const file = files[0];
+                
+                // Check if file is an image
+                if (!file.type.match('image.*')) {
+                    showError('Please select an image file');
+                    resetUI();
+                    try {
+                        errorSound.play();
+                    } catch(e) {
+                        console.log("Audio play prevented by browser policy");
+                    }
+                    return;
+                }
+                
+                // Check file size (max 16MB)
+                if (file.size > 16 * 1024 * 1024) {
+                    showError('File too large. Maximum size is 16MB.');
+                    resetUI();
+                    try {
+                        errorSound.play();
+                    } catch(e) {
+                        console.log("Audio play prevented by browser policy");
+                    }
+                    return;
+                }
+                
+                // Display file info with animation
+                fileName.textContent = file.name;
+                fileInfo.style.display = 'flex';
+                fileInfo.classList.add('animate__animated', 'animate__fadeIn');
+                
+                // Enable submit button
+                submitBtn.disabled = false;
+                submitBtn.classList.add('animate__animated', 'animate__pulse');
+                
+                // Show image preview with animation
+                previewFile(file);
+                
+                // Hide any previous errors
+                hideError();
+                
+                // Hide any previous results
+                resultsContainer.style.display = 'none';
+            }
+            
+            function previewFile(file) {
+                const reader = new FileReader();
+                
+                reader.onload = function() {
+                    imagePreview.src = reader.result;
+                    previewContainer.style.display = 'block';
+                    previewContainer.classList.add('animate__animated', 'animate__fadeIn');
+                }
+                
+                if (file) {
+                    reader.readAsDataURL(file);
+                }
+            }
+            
+            function resetUI() {
+                fileInput.value = '';
+                fileInfo.style.display = 'none';
+                submitBtn.disabled = true;
+                previewContainer.style.display = 'none';
+                resultsContainer.style.display = 'none';
+            }
+            
+            function showError(message) {
+                errorMessage.textContent = message;
+                errorContainer.style.display = 'block';
+                errorContainer.classList.add('animate__animated', 'animate__shakeX');
+            }
+            
+            function hideError() {
+                errorContainer.style.display = 'none';
+                errorContainer.classList.remove('animate__animated', 'animate__shakeX');
+            }
+            
+            submitBtn.addEventListener('click', submitImage);
+            
+            function submitImage() {
+                if (!fileInput.files.length) {
+                    showError('Please select an image first');
+                    try {
+                        errorSound.play();
+                    } catch(e) {
+                        console.log("Audio play prevented by browser policy");
+                    }
+                    return;
+                }
+                
+                const file = fileInput.files[0];
+                const formData = new FormData();
+                formData.append('file1', file);
+                
+                // Change button state to loading with animation
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '<span class="loader"></span>Analyzing...';
+                submitBtn.classList.add('animate__animated', 'animate__pulse');
+                
+                // Hide any previous errors
+                hideError();
+                
+                // Hide previous results
+                resultsContainer.style.display = 'none';
+                
+                fetch('/upload', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! Status: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    // Reset button state
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = '<i class="fas fa-search"></i>Analyze Image';
+                    submitBtn.classList.remove('animate__animated', 'animate__pulse');
+                    
+                    // Check if our backend sent a structured error
+                    if (data.error) {
+                        showError(data.error);
+                        try {
+                            errorSound.play();
+                        } catch(e) {
+                            console.log("Audio play prevented by browser policy");
+                        }
+                        return;
+                    }
+                    
+                    // Display results
+                    displayResults(data);
+                    
+                    // Play success sound
+                    try {
+                        successSound.play();
+                    } catch(e) {
+                        console.log("Audio play prevented by browser policy");
+                    }
+                    
+                    // Check if any result is a hot dog and display confetti
+                    const isHotDog = data.some(item => 
+                        (item.label || '').toLowerCase().includes('hotdog') || 
+                        (item.label || '').toLowerCase().includes('hot dog')
+                    );
+                    
+                    if (isHotDog) {
+                        setTimeout(() => createConfetti(), 500);
+                    }
+                })
+                .catch(error => {
+                    // Reset button state
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = '<i class="fas fa-search"></i>Analyze Image';
+                    submitBtn.classList.remove('animate__animated', 'animate__pulse');
+                    
+                    showError(error.message || 'An error occurred while processing your request. Please try again.');
+                    console.error('Error:', error);
+                    
+                    try {
+                        errorSound.play();
+                    } catch(e) {
+                        console.log("Audio play prevented by browser policy");
+                    }
+                });
+            }
+            
+            function displayResults(data) {
+                if (!Array.isArray(data) || data.length === 0) {
+                    showError('No results returned from the API');
+                    return;
+                }
+                
+                let resultsHTML = '<ul class="result-list">';
+                
+                data.forEach((item, index) => {
+                    const label = item.label || 'Unknown';
+                    const score = item.score || 0;
+                    const percentage = (score * 100).toFixed(2);
+                    
+                    // Determine if it's a hot dog
+                    const isHotDog = label.toLowerCase().includes('hotdog') || label.toLowerCase().includes('hot dog');
+                    const badgeClass = isHotDog ? 'hotdog-badge' : 'not-hotdog-badge';
+                    const badgeText = isHotDog ? 'HOT DOG' : 'NOT HOT DOG';
+                    
+                    resultsHTML += `
+                        <li class="result-item" style="animation-delay: ${index * 0.1}s;">
+                            <div>
+                                <span class="${badgeClass}">${badgeText}</span>
+                                <div class="result-label">${label}</div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 0%"></div>
+                                </div>
+                            </div>
+                            <div class="result-score">${percentage}%</div>
+                        </li>
+                    `;
+                });
+                
+                resultsHTML += '</ul>';
+                
+                resultsContent.innerHTML = resultsHTML;
+                resultsContainer.style.display = 'block';
+                resultsContainer.classList.add('animate__animated', 'animate__fadeInUp');
+                
+                // Animate progress bars after a short delay
+                setTimeout(() => {
+                    const progressBars = document.querySelectorAll('.progress-fill');
+                    data.forEach((item, index) => {
+                        const score = item.score || 0;
+                        const percentage = score * 100;
+                        progressBars[index].style.width = `${percentage}%`;
+                    });
+                }, 300);
+                
+                // Scroll to results with smooth animation
+                setTimeout(() => {
+                    resultsContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }, 200);
+            }
+            
+            // Easter egg - clicking the logo plays a fun animation
+            document.querySelector('.logo').addEventListener('click', function() {
+                this.classList.add('animate__animated', 'animate__flip');
+                setTimeout(() => {
+                    this.classList.remove('animate__animated', 'animate__flip');
+                }, 1000);
+            });
+            
+            // Show upload animation on page load
+            setTimeout(() => {
+                uploadArea.classList.add('animate__animated', 'animate__fadeInUp');
+            }, 300);
+        });
+    </script>
+</body>
+</html>
